@@ -45,10 +45,9 @@ if platform == "osx":
         env["use_llvm"] = "yes"
     if env["target"] in ("debug", "d"):
         env.Append(CCFLAGS=["-g", "-O2", "-arch", "x86_64", "-std=c++14"])
-        env.Append(LINKFLAGS=["-arch", "x86_64"])
     else:
         env.Append(CCFLAGS=["-g", "-O3", "-arch", "x86_64", "-std=c++14"])
-        env.Append(LINKFLAGS=["-arch", "x86_64"])
+    env.Append(LINKFLAGS=["-arch", "x86_64"])
 elif platform == "linux":
     if env["target"] in ("debug", "d"):
         env.Append(CCFLAGS=["-fPIC", "-g3", "-Og"])
@@ -77,25 +76,30 @@ SConscript("godot-cpp/SConstruct")
 def add_sources(sources, dir):
     for f in os.listdir(dir):
         if f.endswith(".cpp"):
-            sources.append(dir + "/" + f)
+            sources.append(f"{dir}/{f}")
 
 
 env.Append(
     CPPPATH=[
         godot_headers_path,
-        godot_bindings_path + "/include",
-        godot_bindings_path + "/include/gen/",
-        godot_bindings_path + "/include/core/",
+        f"{godot_bindings_path}/include",
+        f"{godot_bindings_path}/include/gen/",
+        f"{godot_bindings_path}/include/core/",
     ]
 )
 
 env.Append(
     LIBS=[
-        env.File(os.path.join("godot-cpp/bin", "libgodot-cpp.%s.%s.64%s" % (platform, env["target"], env["LIBSUFFIX"])))
+        env.File(
+            os.path.join(
+                "godot-cpp/bin",
+                f'libgodot-cpp.{platform}.{env["target"]}.64{env["LIBSUFFIX"]}',
+            )
+        )
     ]
 )
 
-env.Append(LIBPATH=[godot_bindings_path + "/bin/"])
+env.Append(LIBPATH=[f"{godot_bindings_path}/bin/"])
 
 sources = []
 add_sources(sources, "src")

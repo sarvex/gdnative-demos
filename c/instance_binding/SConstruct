@@ -58,10 +58,10 @@ if env["platform"] == "":
     host_platform = platform.system().lower()
     if host_platform in platform_array:
         env["platform"] = host_platform
-    elif host_platform in platform_aliases.keys():
+    elif host_platform in platform_aliases:
         env["platform"] = platform_aliases[host_platform]
     else:
-        print("Unsupported platform: " + host_platform)
+        print(f"Unsupported platform: {host_platform}")
         Exit()
 
 env_platform = env["platform"]
@@ -76,10 +76,10 @@ if env["arch"] == "":
         host_machine = platform.machine().lower()
         if host_machine in architecture_array:
             env["arch"] = host_machine
-        elif host_machine in architecture_aliases.keys():
+        elif host_machine in architecture_aliases:
             env["arch"] = architecture_aliases[host_machine]
         else:
-            print("Unsupported CPU architecture: " + host_machine)
+            print(f"Unsupported CPU architecture: {host_machine}")
             Exit()
 
 env_arch = env["arch"]
@@ -150,12 +150,12 @@ env["arch"] = env_arch
 env["platform"] = env_platform
 env["p"] = env_platform
 
-print("Building for architecture " + env_arch + " on platform " + env_platform)
+print(f"Building for architecture {env_arch} on platform {env_platform}")
 
 # Make sure our library includes the Godot headers.
 env.Append(CPPPATH=[".", godot_headers_path])
 
-env["target_path"] += env_platform + "/"
+env["target_path"] += f"{env_platform}/"
 
 # Make sure our library looks in the target path for any other
 # libraries it may need. The path needs to be project-relative.
